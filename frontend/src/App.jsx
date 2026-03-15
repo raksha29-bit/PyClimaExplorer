@@ -110,7 +110,7 @@ function App() {
   const [activeAnomalyResult, setActiveAnomalyResult] = useState(null);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/metadata').then(res => res.json()).then(data => { setMetadata(data); if (data.variables.length > 0) setSelectedVar(data.variables[0]); });
+    fetch('https://pyclima-backend.onrender.com/api/metadata').then(res => res.json()).then(data => { setMetadata(data); if (data.variables.length > 0) setSelectedVar(data.variables[0]); });
   }, []);
 
   useEffect(() => {
@@ -125,11 +125,11 @@ function App() {
 
   useEffect(() => {
     if (!selectedVar || currentView !== 'dashboard') return;
-    fetch(`http://127.0.0.1:8000/api/map-data?variable=${selectedVar}&time_idx=${timeIdx}`).then(res => res.json()).then(data => {
+    fetch(`https://pyclima-backend.onrender.com/api/map-data?variable=${selectedVar}&time_idx=${timeIdx}`).then(res => res.json()).then(data => {
       setMapData({ type: 'FeatureCollection', features: data.data.map(d => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [d.lon, d.lat] }, properties: { value: Number(d.value).toFixed(1), lat: Number(d.lat).toFixed(1), lon: Number(d.lon).toFixed(1) } })) });
     });
-    fetch(`http://127.0.0.1:8000/api/trend-data?variable=${selectedVar}`).then(res => res.json()).then(data => setTrendData(data.trend));
-    fetch(`http://127.0.0.1:8000/api/ai-story?variable=${selectedVar}&time_idx=${timeIdx}`).then(res => res.json()).then(data => setAiStory(data));
+    fetch(`https://pyclima-backend.onrender.com/api/trend-data?variable=${selectedVar}`).then(res => res.json()).then(data => setTrendData(data.trend));
+    fetch(`https://pyclima-backend.onrender.com/api/ai-story?variable=${selectedVar}&time_idx=${timeIdx}`).then(res => res.json()).then(data => setAiStory(data));
   }, [selectedVar, timeIdx, currentView]);
 
   const handleExecuteLocalSearch = async () => {
@@ -151,7 +151,7 @@ function App() {
         else { targetLat = 20; targetLon = 78; }
       }
 
-      const weatherRes = await fetch(`http://127.0.0.1:8000/api/current-weather?lat=${targetLat}&lon=${targetLon}`);
+      const weatherRes = await fetch(`https://pyclima-backend.onrender.com/api/current-weather?lat=${targetLat}&lon=${targetLon}`);
       const weatherData = await weatherRes.json();
 
       setLocalWeatherResult({
@@ -169,7 +169,7 @@ function App() {
   const handleExecuteComparison = () => {
     setIsComparing(true);
     const region = compState || compCountry || compContinent || 'Global';
-    fetch(`http://127.0.0.1:8000/api/compare?region=${region}&year_a=${compYearA}&year_b=${compYearB}`).then(res => res.json()).then(data => { setCompData(data); setIsComparing(false); });
+    fetch(`https://pyclima-backend.onrender.com/api/compare?region=${region}&year_a=${compYearA}&year_b=${compYearB}`).then(res => res.json()).then(data => { setCompData(data); setIsComparing(false); });
   };
 
   const handleTourCallback = (data) => {
@@ -395,7 +395,7 @@ function App() {
     const handleGenerateStory = async () => {
       setIsGeneratingStory(true); setStoryInsights(null); setPersonalityProfile(null); setActiveInsight(null);
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/smart-insights?region=${storyLocation}`);
+        const res = await fetch(`https://pyclima-backend.onrender.com/api/smart-insights?region=${storyLocation}`);
         const data = await res.json();
         setTimeout(() => { setStoryInsights(data); setIsGeneratingStory(false); }, 2000);
       } catch { setIsGeneratingStory(false); }
@@ -404,14 +404,14 @@ function App() {
     const handlePersonality = async () => {
       setIsGeneratingStory(true); setStoryInsights(null); setPersonalityProfile(null); setActiveInsight(null);
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/climate-personality?region=${storyLocation}`);
+        const res = await fetch(`https://pyclima-backend.onrender.com/api/climate-personality?region=${storyLocation}`);
         const data = await res.json();
         setTimeout(() => { setPersonalityProfile(data); setIsGeneratingStory(false); }, 1500);
       } catch { setIsGeneratingStory(false); }
     };
 
     const fetchInsight = async (type) => {
-      const res = await fetch(`http://127.0.0.1:8000/api/deep-insights?region=${storyLocation}&type=${type}`);
+      const res = await fetch(`https://pyclima-backend.onrender.com/api/deep-insights?region=${storyLocation}&type=${type}`);
       const data = await res.json();
       setActiveInsight({ type, text: data.text });
       
@@ -672,7 +672,7 @@ function App() {
                     
                     if (anomalyType) {
                       setClickedMapPoint({ lat, lon, val, variable: selectedVar }); // Keep coords for reference
-                      fetch(`http://127.0.0.1:8000/api/anomaly-detect?lat=${lat}&lon=${lon}&variable=${selectedVar}&type=${anomalyType}&time_idx=${timeIdx}`)
+                      fetch(`https://pyclima-backend.onrender.com/api/anomaly-detect?lat=${lat}&lon=${lon}&variable=${selectedVar}&type=${anomalyType}&time_idx=${timeIdx}`)
                         .then(res => res.json())
                         .then(data => setActiveAnomalyResult(data));
                     } else {
