@@ -67,3 +67,4 @@ npm run dev
 
 ### 3. Access the App
 Open your browser and navigate to the localhost URL provided by Vite (typically http://localhost:5173 or http://localhost:5174).
+
